@@ -5,7 +5,7 @@
 \title{Parse matchday data
 Parse or scrape the meta data of a matchday from a matchday overview page.}
 \usage{
-parse_matchday(html)
+parse_matchday(url)
 }
 \arguments{
 \item{url}{page url}
@@ -16,4 +16,9 @@ data.frame
 \description{
 Parse matchday data
 Parse or scrape the meta data of a matchday from a matchday overview page.
+}
+\examples{
+\dontrun{
+parse_matchday("https://www.deutsche-turnliga.de/archiv.html")
+}
 }

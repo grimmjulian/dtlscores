@@ -4,8 +4,12 @@
 #' @param url page url
 #' @return data.frame
 #' @export
-parse_matchday <- function(html) {
-	html <- rvest::read_html(html)
+#' @examples
+#' \dontrun{
+#' parse_matchday("https://www.deutsche-turnliga.de/archiv.html")
+#' }
+parse_matchday <- function(url) {
+	html <- rvest::read_html(url)
 
 	selection <- parse_selected(as.character(html))
 

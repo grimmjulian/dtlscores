@@ -2,8 +2,7 @@
 % Please edit documentation in R/competition.R
 \name{parse_competition}
 \alias{parse_competition}
-\title{Parse competition results
-Parse or scrape results from the competition site}
+\title{Parse competition results}
 \usage{
 parse_competition(url)
 }
@@ -14,6 +13,10 @@ parse_competition(url)
 data.frame
 }
 \description{
-Parse competition results
 Parse or scrape results from the competition site
+}
+\examples{
+\dontrun{
+parse_competition("https://www.deutsche-turnliga.de/dtl/historie/archiv/detailsm0.html?ID=2787")
+}
 }

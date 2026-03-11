@@ -29,12 +29,16 @@ relocate <- function(df, col, after) {
 }
 
 #' Parse competition results
-
+#'
 #' Parse or scrape results from the competition site
 #'
 #' @param url page url
 #' @return data.frame
 #' @export
+#' @examples
+#' \dontrun{
+#' parse_competition("https://www.deutsche-turnliga.de/dtl/historie/archiv/detailsm0.html?ID=2787")
+#' }
 
 parse_competition <- function(url) {
 	url <- rvest::read_html(url)
