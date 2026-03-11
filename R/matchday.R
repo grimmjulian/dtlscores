@@ -1,0 +1,59 @@
+parse_matchday <- function(html) {
+	html <- rvest::read_html(html)
+
+	selection <- parse_selected(as.character(html))
+
+	df <- selection |>
+		lapply(rep, times = 4) |>
+		as.data.frame()
+
+	l <- html |>
+		rvest::html_element(".table-striped") |>
+		rvest::html_element("tbody") |>
+		rvest::html_elements("td")
+
+	wettkampf <- l[seq(1, length(l), by = 3)]
+	score <- l[seq(2, length(l), by = 3)] |> rvest::html_text2()
+	gp <- l[seq(3, length(l), by = 3)] |> rvest::html_text2()
+
+	df[["datetime"]] <- wettkampf |>
+		rvest::html_text2() |>
+		strsplit(" Uhr ") |>
+		vapply(\(x) x[[1]], FUN.VALUE = character(1)) |>
+		as.POSIXct(format = "%d.%m.%Y %H:%M", tz = "Europe/Berlin")
+
+	df[["location"]] <- wettkampf |>
+		as.character() |>
+		strsplit(" Uhr ") |>
+		vapply(\(x) x[[2]], FUN.VALUE = character(1)) |>
+		strsplit("<br>") |>
+		vapply(\(x) x[[1]], FUN.VALUE = character(1))
+
+	df[["title"]] <- wettkampf |>
+		rvest::html_element("a") |>
+		rvest::html_text2()
+
+	df[["competition_url"]] <- wettkampf |>
+		rvest::html_element("a") |>
+		rvest::html_attr("href")
+
+	df[["score"]] <- score
+	df[["gp"]] <- gp
+	df
+}
+
+parse_selected <- function(html, name) {
+	xml <- rvest::read_html(html) |>
+		rvest::html_elements("select") |>
+		lapply(rvest::html_elements, "option[selected]")
+	type <- c("type", "season", "league", "matchday")
+	type_id <- paste(type, "id", sep = "_")
+	l <- list()
+	for (i in 1:4) {
+		l[[type_id[[i]]]] <- xml[[i]] |>
+			rvest::html_attr("value")
+		l[[type[[i]]]] <- xml[[i]] |>
+			rvest::html_text2()
+	}
+	l
+}
