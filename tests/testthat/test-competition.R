@@ -21,6 +21,11 @@ test_that("teams are crawled correctly", {
 	expect_equal(df[["guest_team"]][[1]], "Exquisa Oberbayern")
 })
 
+test_that("fill function works", {
+	vec <- c(NA, "a", NA, NA, "b", NA)
+	expect_equal(fill(vec), c(NA, "a", "a", "a", "b", "b"))
+})
+
 test_that("events are parsed correctly", {
 	url <- testthat::test_path("competitions", "2900.html")
 	df <- parse_competition(url)

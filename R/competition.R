@@ -1,14 +1,26 @@
+fill <- function(vec) {
+	l <- seq_along(vec)
+	for (i in l[-1]) {
+		if (is.na(vec[[i]])) {
+			vec[[i]] <- vec[[i - 1]]
+		}
+	}
+	vec
+}
+
 parse_competition <- function(html) {
 	html <- rvest::read_html(html)
-	df <- html |> rvest::html_element(".Einzelnachweis") |> rvest::html_table()
+	df <- html |>
+		rvest::html_element(".Einzelnachweis") |>
+		rvest::html_table()
 
 	df <- df |>
-		tidyr::fill(.data$X10) |>
 		dplyr::mutate(
 			home_team = df[[1]][[1]],
 			guest_team = df[[6]][[1]],
+			event = fill(X10),
 			event = dplyr::recode_values(
-				.data$X10,
+				event,
 				"Boden" ~ "floor",
 				"Pferd" ~ "pommel_horse",
 				"Ringe" ~ "still_rings",
@@ -16,15 +28,15 @@ parse_competition <- function(html) {
 				"Barren" ~ "parallel_bars",
 				"Reck" ~ "high_bar"
 			),
-			event = factor(.data$event, levels = unique(.data$event)),
-			home_gymnast = .data$X1,
-			home_d_value = .data$X2,
-			home_end_value = .data$X3,
-			home_score_value = .data$X4,
-			guest_gymnast = .data$X6,
-			guest_d_value = .data$X7,
-			guest_end_value = .data$X8,
-			guest_score_value = .data$X9
+			event = factor(event, levels = unique(event)),
+			home_gymnast = X1,
+			home_d_value = X2,
+			home_end_value = X3,
+			home_score_value = X4,
+			guest_gymnast = X6,
+			guest_d_value = X7,
+			guest_end_value = X8,
+			guest_score_value = X9
 		)
 	event_start_row <- which(df[[1]] == "Turner") + 1
 	event_end_row <- which(df[[1]] == "Summe") - 1
@@ -35,7 +47,7 @@ parse_competition <- function(html) {
 	df <- cbind(df, parse_competition_tags(as.character(html)))
 
 	df |>
-		dplyr::group_by(.data$event) |>
+		dplyr::group_by(event) |>
 		dplyr::mutate(pairing_order = seq_len(dplyr::n())) |>
 		dplyr::ungroup() |>
 		dplyr::mutate(
@@ -44,9 +56,9 @@ parse_competition <- function(html) {
 				\(x) as.numeric(gsub(",", ".", x))
 			)
 		) |>
-		dplyr::relocate(.data$home_gymnast_url, .after = .data$home_gymnast) |>
-		dplyr::relocate(.data$home_starts, .after = .data$home_gymnast_url) |>
-		dplyr::relocate(.data$guest_gymnast_url, .after = .data$guest_gymnast) |>
+		dplyr::relocate(home_gymnast_url, .after = home_gymnast) |>
+		dplyr::relocate(home_starts, .after = home_gymnast_url) |>
+		dplyr::relocate(guest_gymnast_url, .after = guest_gymnast) |>
 		dplyr::select(-dplyr::starts_with("X"))
 }
 
