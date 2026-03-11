@@ -28,9 +28,17 @@ relocate <- function(df, col, after) {
 	df[, cols]
 }
 
-parse_competition <- function(html) {
-	html <- rvest::read_html(html)
-	df <- html |>
+#' Parse competition results
+
+#' Parse or scrape results from the competition site
+#'
+#' @param url page url
+#' @return data.frame
+#' @export
+
+parse_competition <- function(url) {
+	url <- rvest::read_html(url)
+	df <- url |>
 		rvest::html_element(".Einzelnachweis") |>
 		rvest::html_table()
 
@@ -54,7 +62,7 @@ parse_competition <- function(html) {
 		unlist()
 
 	df <- df[event_rows, ]
-	df <- cbind(df, parse_competition_tags(as.character(html)))
+	df <- cbind(df, parse_competition_tags(as.character(url)))
 
 	for (e in levels(df[["event"]])) {
 		i <- df[["event"]] == e

@@ -1,3 +1,9 @@
+#' Parse matchday data
+#' Parse or scrape the meta data of a matchday from a matchday overview page.
+#'
+#' @param url page url
+#' @return data.frame
+#' @export
 parse_matchday <- function(html) {
 	html <- rvest::read_html(html)
 

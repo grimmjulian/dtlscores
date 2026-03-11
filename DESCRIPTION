@@ -1,9 +1,9 @@
 Package: dtlscores
-Title: What the Package Does (One Line, Title Case)
+Title: Scrape Deutsche Turnliga Archive
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
+    person("Julian", "Grimm", , "grimmjulian225@gmail.com", role = c("aut", "cre"))
+Description: This package provides helper functions to scrape the online archive of the Deutsche Turnliga.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
