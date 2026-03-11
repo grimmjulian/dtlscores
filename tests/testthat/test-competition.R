@@ -1,3 +1,11 @@
+test_that("relocating columns works", {
+	df <- data.frame(a = "a", b = "b", c = "c", d = "d")
+	expect_equal(
+		relocate(df, "c", "a"),
+		data.frame(a = "a", c = "c", b = "b", d = "d")
+	)
+})
+
 test_that("parsing the competition returns a data frame", {
 	url <- testthat::test_path("competitions", "2900.html")
 	expect_true(is.data.frame(parse_competition(url)))

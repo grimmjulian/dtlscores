@@ -8,36 +8,46 @@ fill <- function(vec) {
 	vec
 }
 
+recode_events <- function(vec) {
+	fac <- factor(vec, levels = unique(vec))
+	levels(fac) <- c(
+		"floor",
+		"pommel_horse",
+		"still_rings",
+		"vault",
+		"parallel_bars",
+		"high_bar"
+	)
+	fac
+}
+
+relocate <- function(df, col, after) {
+	other_cols <- colnames(df)[which(!colnames(df) == col)]
+	pos <- match(after, other_cols)
+	cols <- append(other_cols, col, pos)
+	df[, cols]
+}
+
 parse_competition <- function(html) {
 	html <- rvest::read_html(html)
 	df <- html |>
 		rvest::html_element(".Einzelnachweis") |>
 		rvest::html_table()
 
-	df <- df |>
-		dplyr::mutate(
-			home_team = df[[1]][[1]],
-			guest_team = df[[6]][[1]],
-			event = fill(X10),
-			event = dplyr::recode_values(
-				event,
-				"Boden" ~ "floor",
-				"Pferd" ~ "pommel_horse",
-				"Ringe" ~ "still_rings",
-				"Sprung" ~ "vault",
-				"Barren" ~ "parallel_bars",
-				"Reck" ~ "high_bar"
-			),
-			event = factor(event, levels = unique(event)),
-			home_gymnast = X1,
-			home_d_value = X2,
-			home_end_value = X3,
-			home_score_value = X4,
-			guest_gymnast = X6,
-			guest_d_value = X7,
-			guest_end_value = X8,
-			guest_score_value = X9
-		)
+	df[["home_team"]] <- df[[1]][[1]]
+	df[["guest_team"]] <- df[[6]][[1]]
+	df[["event"]] <- df[["X10"]] |>
+		fill() |>
+		recode_events()
+	df[["home_gymnast"]] <- df[["X1"]]
+	df[["home_d_value"]] <- df[["X2"]]
+	df[["home_end_value"]] <- df[["X3"]]
+	df[["home_score_value"]] <- df[["X4"]]
+	df[["guest_gymnast"]] <- df[["X6"]]
+	df[["guest_d_value"]] <- df[["X7"]]
+	df[["guest_end_value"]] <- df[["X8"]]
+	df[["guest_score_value"]] <- df[["X9"]]
+
 	event_start_row <- which(df[[1]] == "Turner") + 1
 	event_end_row <- which(df[[1]] == "Summe") - 1
 	event_rows <- Map(seq, event_start_row, event_end_row) |>
@@ -46,20 +56,24 @@ parse_competition <- function(html) {
 	df <- df[event_rows, ]
 	df <- cbind(df, parse_competition_tags(as.character(html)))
 
-	df |>
-		dplyr::group_by(event) |>
-		dplyr::mutate(pairing_order = seq_len(dplyr::n())) |>
-		dplyr::ungroup() |>
-		dplyr::mutate(
-			dplyr::across(
-				dplyr::ends_with("value"),
-				\(x) as.numeric(gsub(",", ".", x))
-			)
-		) |>
-		dplyr::relocate(home_gymnast_url, .after = home_gymnast) |>
-		dplyr::relocate(home_starts, .after = home_gymnast_url) |>
-		dplyr::relocate(guest_gymnast_url, .after = guest_gymnast) |>
-		dplyr::select(-dplyr::starts_with("X"))
+	for (e in levels(df[["event"]])) {
+		i <- df[["event"]] == e
+		df[i, "pairing_order"] <- seq_len(sum(i))
+	}
+
+	value_cols <- endsWith(colnames(df), "value")
+
+	for (v in which(value_cols)) {
+		df[[v]] <-
+			as.numeric(gsub(",", ".", df[[v]]))
+	}
+
+	df <- relocate(df, "home_gymnast_url", after = "home_gymnast")
+	df <- relocate(df, "home_starts", after = "home_gymnast_url")
+	df <- relocate(df, "guest_gymnast_url", after = "guest_gymnast")
+
+	x_cols <- startsWith(colnames(df), "X")
+	df[, !x_cols]
 }
 
 parse_competition_tags <- function(html) {
