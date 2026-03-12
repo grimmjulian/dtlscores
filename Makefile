@@ -7,12 +7,14 @@ docs: README.md
 targets:
 	Rscript -e "targets::tar_make(script = 'data-raw/_targets.R')"
 
-check: targets docs
+build: docs targets
 	rm -f *.tar.gz
 	R CMD build --compact-vignettes="gs+qpdf" .
+
+check: build
 	R CMD check *.tar.gz
 
-cran: targets docs
+cran: build
 	rm -f *.tar.gz
 	R CMD build --compact-vignettes="gs+qpdf" .
 	R CMD check --as-cran *.tar.gz
