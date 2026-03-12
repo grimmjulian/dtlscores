@@ -4,12 +4,15 @@ README.md: README.Rmd
 docs: README.md
 	Rscript -e "roxygen2::roxygenize('.')"
 
-check:
+targets:
+	Rscript -e "targets::tar_make(script = 'data-raw/_targets.R')"
+
+check: targets docs
 	rm -f *.tar.gz
 	R CMD build --compact-vignettes="gs+qpdf" .
 	R CMD check *.tar.gz
 
-cran: 
+cran: targets docs
 	rm -f *.tar.gz
 	R CMD build --compact-vignettes="gs+qpdf" .
 	R CMD check --as-cran *.tar.gz
@@ -18,6 +21,7 @@ test:
 	Rscript -e "testthat::test_local()"
 
 clean: 
-	rm README.html
-	rm *.tar.gz
+	rm -f README.html
+	rm -f *.tar.gz
+	rm -rf dtlscores.Rcheck
 

@@ -83,6 +83,7 @@ parse_competition <- function(url) {
 	df <- relocate(df, "home_gymnast_url", after = "home_gymnast")
 	df <- relocate(df, "home_starts", after = "home_gymnast_url")
 	df <- relocate(df, "guest_gymnast_url", after = "guest_gymnast")
+	df <- relocate(df, "pairing_order", after = "event")
 
 	x_cols <- startsWith(colnames(df), "X")
 	df[, !x_cols]
@@ -94,7 +95,8 @@ parse_competition_tags <- function(html) {
 		rvest::html_elements("a")
 
 	urls <- tags |>
-		rvest::html_attr("href")
+		rvest::html_attr("href") |>
+		pad_urls()
 
 	is_starting <- tags |>
 		lapply(rvest::html_element, "span") |>

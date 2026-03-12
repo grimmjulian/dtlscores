@@ -1,3 +1,5 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 Makefile
+^_targets/
+^data-raw/

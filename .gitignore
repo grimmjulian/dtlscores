@@ -4,5 +4,6 @@
 .RDataTmp
 .Ruserdata
 *-Ex.R
+/*_targets/
 /*.tar.gz
 /*.Rcheck/
