@@ -3,3 +3,7 @@
 Makefile
 ^_targets/
 ^data-raw/
+^gen-env.R$
+^default.nix$
+^result$
+^result-.*

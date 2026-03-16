@@ -8,7 +8,7 @@ Description: Provides helper functions to scrape the online archive of the Deuts
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     rvest
 Suggests: 

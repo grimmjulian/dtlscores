@@ -27,3 +27,5 @@ clean:
 	rm -f *.tar.gz
 	rm -rf dtlscores.Rcheck
 
+default.nix: gen-env.R
+	nix-shell -p R rPackages.rix --run "Rscript gen-env.R"
