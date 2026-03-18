@@ -18,7 +18,7 @@ Parse matchday data
 Parse or scrape the meta data of a matchday from a matchday overview page.
 }
 \examples{
-\dontrun{
+\donttest{
 parse_matchday("https://www.deutsche-turnliga.de/archiv.html")
 }
 }

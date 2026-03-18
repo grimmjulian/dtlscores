@@ -36,7 +36,7 @@ relocate <- function(df, col, after) {
 #' @return data.frame
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' parse_competition("https://www.deutsche-turnliga.de/dtl/historie/archiv/detailsm0.html?ID=2787")
 #' }
 

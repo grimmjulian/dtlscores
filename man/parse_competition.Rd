@@ -16,7 +16,7 @@ data.frame
 Parse or scrape results from the competition site
 }
 \examples{
-\dontrun{
+\donttest{
 parse_competition("https://www.deutsche-turnliga.de/dtl/historie/archiv/detailsm0.html?ID=2787")
 }
 }

@@ -5,7 +5,7 @@
 #' @return data.frame
 #' @export
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' parse_matchday("https://www.deutsche-turnliga.de/archiv.html")
 #' }
 parse_matchday <- function(url) {
