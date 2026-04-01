@@ -5,5 +5,7 @@ Makefile
 ^data-raw/
 ^gen-env.R$
 ^default.nix$
+^\.editorconfig$
+^\.lintr$
 ^result$
 ^result-.*

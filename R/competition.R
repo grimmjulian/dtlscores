@@ -1,3 +1,5 @@
+#' @include utils.R
+
 fill <- function(vec) {
   l <- seq_along(vec)
   for (i in l[-1]) {
