@@ -97,7 +97,7 @@ parse_competition_tags <- function(html) {
 
   urls <- tags |>
     rvest::html_attr("href") |>
-    pad_urls()
+    pad_urls() #nolint
 
   is_starting <- tags |>
     lapply(rvest::html_element, "span") |>

@@ -48,7 +48,7 @@ parse_matchday <- function(url) {
   df[["competition_url"]] <- wettkampf |>
     rvest::html_element("a") |>
     rvest::html_attr("href") |>
-    pad_urls()
+    pad_urls() #nolint
 
   df[["score"]] <- score
   df[["gp"]] <- gp
