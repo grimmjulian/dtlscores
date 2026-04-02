@@ -86,3 +86,9 @@ test_that("gymnast urls are parsed correctly", {
     "https://www.deutsche-turnliga.de/vereine/turner.html?ID=21198"
   )
 })
+
+test_that("sudden deaths are parsed correctly", {
+  url <- testthat::test_path("competitions", "2905.html")
+  df <- parse_competition(url)
+  expect_snapshot(df)
+})
