@@ -24,10 +24,15 @@ list(
     }
   ),
   tar_target(
+    name = matchday_urls,
+    command = scrape_matchday_urls()
+  ),
+  tar_target(
     name = save_data,
     command = {
       usethis::use_data(competition, overwrite = TRUE)
       usethis::use_data(matchday, overwrite = TRUE)
+      usethis::use_data(matchday_urls, overwrite = TRUE)
     }
   )
 )

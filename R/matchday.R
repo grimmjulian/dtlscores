@@ -56,7 +56,7 @@ parse_matchday <- function(url) {
   df
 }
 
-parse_selected <- function(html, name) {
+parse_selected <- function(html) {
   xml <- rvest::read_html(html) |>
     rvest::html_elements("select") |>
     lapply(rvest::html_elements, "option[selected]")

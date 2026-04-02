@@ -15,8 +15,6 @@ check: build
 	R CMD check *.tar.gz
 
 cran: build
-	rm -f *.tar.gz
-	R CMD build --compact-vignettes="gs+qpdf" .
 	R CMD check --as-cran *.tar.gz
 
 test: 

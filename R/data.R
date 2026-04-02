@@ -52,3 +52,20 @@
 #'
 #' @source https://www.deutsche-turnliga.de/archiv.html?Typ=Mann&SaisonID=20&LigaID=760&TagesID=666
 "matchday"
+
+
+#' Dataset with all matchday urls
+#'
+#' This data set contains urls to all match days in 
+#' currently parseable leagues.
+#'
+#' @format A data frame with 5 columns and 519 rows:
+#' \describe{
+#'   \item{type}{type of the matchday}
+#'   \item{season}{season of the matchday}
+#'   \item{league}{league of the matchday}
+#'   \item{matchday}{matchday label of the matchday}
+#'   \item{url}{url to matchday}
+#' }
+#'
+"matchday_urls"
