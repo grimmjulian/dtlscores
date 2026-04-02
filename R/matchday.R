@@ -1,8 +1,9 @@
-#' @include utils.R
 
 #' Parse matchday data
+#'
 #' Parse or scrape the meta data of a matchday from a matchday overview page.
 #'
+#' @include utils.R
 #' @param url page url
 #' @return data.frame
 #' @export
