@@ -52,3 +52,9 @@ test_that("parsing selection works", {
   l <- parse_selected(url)
   expect_snapshot(l)
 })
+
+test_that("parsing works for matchdays with 3 competitions", {
+  url <- testthat::test_path("matchdays", "M-25-3S-1.html")
+  df <- parse_matchday(url)
+  expect_snapshot(df)
+})
