@@ -18,7 +18,18 @@
                                                     guest_gymnast_url guest_d_value
       1 https://www.deutsche-turnliga.de/vereine/turner.html?ID=21278           4.0
       2 https://www.deutsche-turnliga.de/vereine/turner.html?ID=21397           3.6
-        guest_end_value guest_score_value
-      1            12.0                 3
-      2            12.2                 1
+        guest_end_value guest_score_value        competition_url
+      1            12.0                 3 competitions/2905.html
+      2            12.2                 1 competitions/2905.html
+
+# empty competitions are parsed correctly
+
+    Code
+      df
+    Output
+       [1] home_team         guest_team        event             pairing_order    
+       [5] home_gymnast      home_gymnast_url  home_starts       home_d_value     
+       [9] home_end_value    home_score_value  guest_gymnast     guest_gymnast_url
+      [13] guest_d_value     guest_end_value   guest_score_value competition_url  
+      <0 rows> (or 0-length row.names)
 

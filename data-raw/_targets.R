@@ -34,5 +34,34 @@ list(
       usethis::use_data(matchday, overwrite = TRUE)
       usethis::use_data(matchday_urls, overwrite = TRUE)
     }
+  ),
+  tar_target(
+    name = competition_meta,
+    command = {
+      u <- matchday_urls$url
+      lapply(u, parse_matchday) |>
+        do.call(what = rbind)
+    }
+  ),
+  tar_target(
+    name = competition_results,
+    command = {
+      # u <- competition_meta$competition_url
+      # lapply(u, parse_competition) |>
+      #   do.call(what = rbind)
+      for (i in nrow(competition_meta)) {
+        tryCatch(
+          {
+            competition_meta[["competition_url"]][[i]] |>
+              parse_competition()
+          },
+          error = function(e) {
+            print(competition_meta[["competition_url"]][[i]])
+            print(e)
+            break
+          }
+        )
+      }
+    }
   )
 )

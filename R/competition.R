@@ -42,6 +42,7 @@ relocate <- function(df, col, after) {
 #' parse_competition("https://www.deutsche-turnliga.de/dtl/historie/archiv/detailsm0.html?ID=2787")
 #' }
 parse_competition <- function(url) {
+  l <- url
   url <- rvest::read_html(url)
   df <- url |>
     rvest::html_element(".Einzelnachweis") |>
@@ -49,9 +50,13 @@ parse_competition <- function(url) {
 
   df[["home_team"]] <- df[[1]][[1]]
   df[["guest_team"]] <- df[[6]][[1]]
-  df[["event"]] <- df[["X10"]] |>
-    fill() |>
-    recode_events()
+  if (is.null(df[["X10"]])) {
+    df[["event"]] <- NA
+  } else {
+    df[["event"]] <- df[["X10"]] |>
+      fill() |>
+      recode_events()
+  }
   df[["home_gymnast"]] <- df[["X1"]]
   df[["home_d_value"]] <- df[["X2"]]
   df[["home_end_value"]] <- df[["X3"]]
@@ -69,6 +74,8 @@ parse_competition <- function(url) {
   df <- df[event_rows, ]
   df <- cbind(df, parse_competition_tags(as.character(url)))
 
+  df[["pairing_order"]] <- numeric(nrow(df))
+
   for (e in levels(df[["event"]])) {
     i <- df[["event"]] == e
     df[i, "pairing_order"] <- seq_len(sum(i))
@@ -85,6 +92,11 @@ parse_competition <- function(url) {
   df <- relocate(df, "home_starts", after = "home_gymnast_url")
   df <- relocate(df, "guest_gymnast_url", after = "guest_gymnast")
   df <- relocate(df, "pairing_order", after = "event")
+  if (nrow(df) > 0) {
+    df[["competition_url"]] <- l
+  } else {
+    df[["competition_url"]] <- character()
+  }
 
   x_cols <- startsWith(colnames(df), "X")
   df[, !x_cols]
@@ -98,6 +110,16 @@ parse_competition_tags <- function(html) {
   urls <- tags |>
     rvest::html_attr("href") |>
     pad_urls() #nolint
+
+  if (length(urls) == 0) {
+    return(
+      data.frame(
+        home_gymnast_url = character(),
+        guest_gymnast_url = character(),
+        home_starts = logical()
+      )
+    )
+  }
 
   is_starting <- tags |>
     lapply(rvest::html_element, "span") |>

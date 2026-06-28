@@ -20,6 +20,9 @@ cran: build
 test: 
 	Rscript -e "testthat::test_local()"
 
+snapshot_review: 
+	Rscript -e "options(browser = 'firefox'); testthat::snapshot_review()"
+
 clean: 
 	rm -f README.html
 	rm -f *.tar.gz

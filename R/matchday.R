@@ -16,10 +16,6 @@ parse_matchday <- function(url) {
 
   selection <- parse_selected(as.character(html))
 
-  df <- selection |>
-    lapply(rep, times = 4) |>
-    as.data.frame()
-
   l <- html |>
     rvest::html_element(".table-striped") |>
     rvest::html_element("tbody") |>
@@ -28,6 +24,10 @@ parse_matchday <- function(url) {
   wettkampf <- l[seq(1, length(l), by = 3)]
   score <- l[seq(2, length(l), by = 3)] |> rvest::html_text2()
   gp <- l[seq(3, length(l), by = 3)] |> rvest::html_text2()
+
+  df <- selection |>
+    lapply(rep, times = length(wettkampf)) |>
+    as.data.frame()
 
   df[["datetime"]] <- wettkampf |>
     rvest::html_text2() |>
@@ -53,6 +53,7 @@ parse_matchday <- function(url) {
 
   df[["score"]] <- score
   df[["gp"]] <- gp
+  df[["matchday_url"]] <- url
   df
 }
 

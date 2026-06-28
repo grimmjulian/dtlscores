@@ -92,3 +92,9 @@ test_that("sudden deaths are parsed correctly", {
   df <- parse_competition(url)
   expect_snapshot(df)
 })
+
+test_that("empty competitions are parsed correctly", {
+  url <- testthat::test_path("competitions", "2891.html")
+  df <- parse_competition(url)
+  expect_snapshot(df)
+})
