@@ -17,7 +17,9 @@
             diffviewer
             languageserver
             rvest
+						tidyverse
             targets;
+
         };
 
         tex = (pkgs.texlive.combine {

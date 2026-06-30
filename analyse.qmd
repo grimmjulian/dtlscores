@@ -1,0 +1,75 @@
+---
+title: "Analyse"
+author: "Julian"
+date: today
+format: html 
+---
+
+```{r}
+devtools::load_all()
+targets::tar_load(routines)
+targets::tar_load(competitions)
+```
+
+## Setup
+
+Wir schauen uns alle Ergebnisse im Jahr 2025 für folgende Vereine an:
+
+```{r}
+teams <- c("Exquisa Oberbayern", "TSV Monheim", "TT Buttenwiesen-Inningen", "VfL Kirchheim unter Teck", "TSV Unterföhring", "TSV Pfuhl", "TG Hanauerland", "KTV Ries") #nolint
+teams
+
+```
+
+Filtern wir so, dass nru übungen vom letzten Jahr drin sind, und auch nur von den Teams erstmal:
+
+```{r}
+cc <- competitions[format(competitions$datetime, "%Y") == "2025", ]
+r <- routines[routines$competition_url %in% cc$competition_url & routines$team %in% teams, ]
+```
+
+
+Schauen wir, dass die teams alle drin sind:
+
+```{r}
+all(teams %in% routines$team)
+```
+
+## Durchschnittliche Wertungen aller Teams an allen geräten
+
+Wir schauen uns durchschnittliche Werte an, da nicht alle Teams jedes Gerät geturnt haben.
+Durchschnittliche Werte pro Gerät auf Übung runtergebrochen oder auf Gerätebene zu lassen macht keinen Unterschied.
+
+### Standing TSV Monheim in der Liga
+
+```{r}
+
+df <- r |>
+  dplyr::summarize(m = mean(end_value), .by = c(team, event)) |>
+  tidyr::pivot_wider(names_from = event, values_from = m) |>
+  dplyr::mutate(total = (floor + pommel_horse + still_rings + vault + parallel_bars + high_bar) / 6) |>
+	tidyr::pivot_longer(-1, names_to = "event", values_to = "end_value") |>
+	dplyr::mutate(event = factor(event, levels = c("floor", "pommel_horse", "still_rings", "vault", "parallel_bars", "high_bar", "total")))
+ggplot2::ggplot(data = df, mapping = ggplot2::aes(x = event, y = end_value)) + ggplot2::geom_point() +
+  ggplot2::geom_point(data = df[df$team == "TSV Monheim", ], color = "red", size = 3)
+
+df |>
+	dplyr::mutate(r = dplyr::min_rank(dplyr::desc(end_value)),
+								.by = event) |>
+	dplyr::filter(team == "TSV Monheim")
+```
+
+* TSV Monheim hatte im Durchschnitt die höchsten Endwerte an Barren, Reck und im Gesamtergebnis
+
+### Abstand von Monheim zu Spitzengruppe
+
+```{r}
+df |>
+	dplyr::mutate(ref = end_value[team == "TSV Monheim"],
+								diff = end_value - ref,
+								.by = event) |>
+  dplyr::filter(end_value > end_value[team == "TSV Monheim"], .by = event) |>
+	dplyr::arrange(event, diff)
+```
+
+* Auch wenn TSV Monheim an den Ringen nur Rang 5 ist, sind es weniger als 2,5 Zehntel zum Spitzenreiter Exquisa.
