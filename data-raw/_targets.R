@@ -36,7 +36,7 @@ list(
     }
   ),
   tar_target(
-    name = competition_meta,
+    name = competitions,
     command = {
       u <- matchday_urls$url
       lapply(u, parse_matchday) |>
@@ -44,24 +44,35 @@ list(
     }
   ),
   tar_target(
-    name = competition_results,
+    name = pairings,
     command = {
-      # u <- competition_meta$competition_url
-      # lapply(u, parse_competition) |>
-      #   do.call(what = rbind)
-      for (i in nrow(competition_meta)) {
-        tryCatch(
-          {
-            competition_meta[["competition_url"]][[i]] |>
-              parse_competition()
-          },
-          error = function(e) {
-            print(competition_meta[["competition_url"]][[i]])
-            print(e)
-            break
-          }
-        )
-      }
+      u <- competitions$competition_url
+      lapply(u, parse_competition) |>
+        do.call(what = rbind)
+    }
+  ),
+  tar_target(
+    name = routines,
+    command = {
+      a <- pairings
+      a[["guest_starts"]] <- !a[["home_starts"]]
+      home_routines <- a[, grep(
+        pattern = "^guest_",
+        colnames(a),
+        invert = TRUE
+      )]
+      colnames(home_routines) <- sub("^home_", "", colnames(home_routines))
+      home_routines[["is_home"]] <- TRUE
+
+      guest_routines <- a[, grep(
+        pattern = "^home_",
+        colnames(a),
+        invert = TRUE
+      )]
+      colnames(guest_routines) <- sub("^guest_", "", colnames(guest_routines))
+      guest_routines[["is_home"]] <- FALSE
+
+      rbind(home_routines, guest_routines)
     }
   )
 )

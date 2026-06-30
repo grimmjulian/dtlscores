@@ -46,6 +46,12 @@ parse_matchday <- function(url) {
     rvest::html_element("a") |>
     rvest::html_text2()
 
+  teams <- strsplit(df[["title"]], " - ", fixed = TRUE)
+  df[["home_team"]] <- teams |>
+    sapply(`[`, 1)
+  df[["guest_team"]] <- teams |>
+    sapply(`[`, 2)
+
   df[["competition_url"]] <- wettkampf |>
     rvest::html_element("a") |>
     rvest::html_attr("href") |>
