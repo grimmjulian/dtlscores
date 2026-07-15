@@ -9,3 +9,6 @@
 /*.Rcheck/
 result
 result-*
+inst/doc
+/doc/
+/Meta/

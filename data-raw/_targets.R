@@ -33,6 +33,9 @@ list(
       usethis::use_data(competition, overwrite = TRUE)
       usethis::use_data(matchday, overwrite = TRUE)
       usethis::use_data(matchday_urls, overwrite = TRUE)
+      usethis::use_data(routines, overwrite = TRUE)
+      usethis::use_data(pairings, overwrite = TRUE)
+      usethis::use_data(competitions, overwrite = TRUE)
     }
   ),
   tar_target(
@@ -54,25 +57,7 @@ list(
   tar_target(
     name = routines,
     command = {
-      a <- pairings
-      a[["guest_starts"]] <- !a[["home_starts"]]
-      home_routines <- a[, grep(
-        pattern = "^guest_",
-        colnames(a),
-        invert = TRUE
-      )]
-      colnames(home_routines) <- sub("^home_", "", colnames(home_routines))
-      home_routines[["is_home"]] <- TRUE
-
-      guest_routines <- a[, grep(
-        pattern = "^home_",
-        colnames(a),
-        invert = TRUE
-      )]
-      colnames(guest_routines) <- sub("^guest_", "", colnames(guest_routines))
-      guest_routines[["is_home"]] <- FALSE
-
-      rbind(home_routines, guest_routines)
+      to_routines(pairings)
     }
   )
 )

@@ -45,10 +45,14 @@
       1                  Geothermie Arena | Utzweg 1 | 82008 Unterhaching
       2                    Murrtal-Arena | Jahnstraße 15 | 71522 Backnang
       3 Ebnetsporthalle Wangen | Danneckerweg 50 | 88239 Wangen im Allgäu
-                                         title
-      1 USC München - TSV Grötzingen-Karlsruhe
-      2           TSG Backnang - WTG Heckengäu
-      3          TG Wangen-Eisenharz - TV Bühl
+                                         title           home_team
+      1 USC München - TSV Grötzingen-Karlsruhe         USC München
+      2           TSG Backnang - WTG Heckengäu        TSG Backnang
+      3          TG Wangen-Eisenharz - TV Bühl TG Wangen-Eisenharz
+                      guest_team
+      1 TSV Grötzingen-Karlsruhe
+      2            WTG Heckengäu
+      3                  TV Bühl
                                                        competition_url score  gp
       1 https://www.deutsche-turnliga.de/archiv/detailsm0.html?ID=2868 24:30 4:8
       2 https://www.deutsche-turnliga.de/archiv/detailsm0.html?ID=2869 25:42 3:9

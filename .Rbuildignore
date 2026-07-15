@@ -2,6 +2,7 @@
 ^README\.Rmd$
 Makefile
 ^_targets/
+^analyse_files/
 ^data-raw/
 ^gen-env.R$
 ^default.nix$
@@ -9,3 +10,8 @@ Makefile
 ^\.lintr$
 ^result$
 ^result-.*
+^doc$
+^Meta$
+^air\.toml$
+^flake\.nix$
+^flake\.lock$

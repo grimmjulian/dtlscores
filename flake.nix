@@ -18,6 +18,7 @@
             languageserver
             rvest
 						tidyverse
+						gt
             targets;
 
         };
@@ -35,7 +36,9 @@
             html-tidy
             nix
             pandoc
+						qpdf
             R;
+
         };
       in
       {

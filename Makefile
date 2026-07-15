@@ -12,7 +12,7 @@ build: docs targets
 	R CMD build --compact-vignettes="gs+qpdf" .
 
 check: build
-	R CMD check *.tar.gz
+	Rscript -e "devtools::check()"
 
 cran: build
 	R CMD check --as-cran *.tar.gz
