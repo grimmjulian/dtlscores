@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-	echo = FALSE
+  echo = FALSE
 )
 ```
 
@@ -23,23 +23,27 @@ library(dplyr, warn.conflicts = FALSE)
 Für uns sind die Teams der zweiten Bundesliga Süd in 2026 von Interesse:
 
 ```{r team_overview}
-teams <- c("Exquisa Oberbayern", "TSV Monheim", "TT Buttenwiesen-Inningen", "VfL Kirchheim unter Teck", "TSV Unterföhring", "TSV Pfuhl", "TG Hanauerland", "KTV Ries") #nolint
+teams <- c("Exquisa Oberbayern", "TSV Monheim", "TT Buttenwiesen-Inningen", "VfL Kirchheim unter Teck", "TSV Unterföhring", "TSV Pfuhl", "TG Hanauerland", "KTV Ries") # nolint
 
 routines |>
   filter(team %in% teams, end_value > 0) |>
-	group_by(competition_url) |>
-	filter(n() == 24) |>
-	ungroup() |>
-	select(team, competition_url, end_value) |>
+  group_by(competition_url) |>
+  filter(n() == 24) |>
+  ungroup() |>
+  select(team, competition_url, end_value) |>
   unique() |>
-	left_join(competitions, by = join_by(competition_url)) |>
-	filter(season == "2025") |>
-	group_by(team) |>
-	summarize(league = unique(league),
-				 total = mean(end_value) * 24) |>
-	arrange(desc(total)) |>
-	rename(Team = "team", 
-				 `Liga 2025` = "league",
-				 `Durschn. Endwert` = "total") |>
-	gt::gt()
+  left_join(competitions, by = join_by(competition_url)) |>
+  filter(season == "2025") |>
+  group_by(team) |>
+  summarize(
+    league = unique(league),
+    total = mean(end_value) * 24
+  ) |>
+  arrange(desc(total)) |>
+  rename(
+    Team = "team",
+    `Liga 2025` = "league",
+    `Durschn. Endwert` = "total"
+  ) |>
+  gt::gt()
 ```

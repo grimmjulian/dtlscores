@@ -109,7 +109,7 @@ parse_competition_tags <- function(html) {
 
   urls <- tags |>
     rvest::html_attr("href") |>
-    pad_urls() #nolint
+    pad_urls() # nolint
 
   if (length(urls) == 0) {
     return(

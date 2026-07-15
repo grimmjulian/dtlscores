@@ -59,7 +59,7 @@
 
 #' Dataset with all matchday urls
 #'
-#' This data set contains urls to all match days in 
+#' This data set contains urls to all match days in
 #' currently parseable leagues.
 #'
 #' @format A data frame with 5 columns and 519 rows:
