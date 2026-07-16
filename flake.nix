@@ -19,6 +19,7 @@
             rvest
 						tidyverse
 						gt
+						ggplot2
             targets;
 
         };

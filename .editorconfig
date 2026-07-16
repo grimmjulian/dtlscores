@@ -1,2 +1,5 @@
 [*.R]
 indent_style = space
+
+[*.Rmd]
+indent_style = space

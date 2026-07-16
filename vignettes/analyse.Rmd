@@ -18,6 +18,7 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(dtlscores)
 library(dplyr, warn.conflicts = FALSE)
+library(ggplot2)
 ```
 
 Für uns sind die Teams der zweiten Bundesliga Süd in 2026 von Interesse:
@@ -47,3 +48,44 @@ routines |>
   ) |>
   gt::gt()
 ```
+
+Stellt sich jetzt halt die Frage, wie ist das Ergebnis pro Gerät und wie würde sich Monheim schlagen:
+
+
+```{r}
+routines |>
+  filter(team %in% teams) |>
+  left_join(competitions, by = join_by(competition_url)) |>
+  filter(season == "2025") |>
+  summarize(
+    total = mean(end_value) * 4,
+    .by = c(team, event)
+  ) |>
+  tidyr::pivot_wider(names_from = event, values_from = total) |>
+  mutate(total = rowSums(across(-1), na.rm = TRUE)) |>
+  arrange(desc(total)) |>
+  gt::gt()
+
+
+
+routines |>
+  filter(team %in% teams) |>
+  left_join(competitions, by = join_by(competition_url)) |>
+  filter(season == "2025") |>
+  summarize(
+    total = mean(end_value) * 4,
+    .by = c(team, event)
+  ) |>
+  mutate(
+    diff = total - total[team == "TSV Monheim"],
+    .by = c(event)
+  ) |>
+  select(-c(total)) |>
+  mutate(diff = case_when(diff < 0 ~ 2, diff == 0 ~ 1, diff > 0 ~ 0)) |>
+  filter(!team == "TSV Monheim") |>
+  tidyr::pivot_wider(names_from = event, values_from = diff) |>
+  mutate(total = rowSums(across(-1), na.rm = TRUE)) |>
+  arrange(total) |>
+  gt::gt()
+```
+
