@@ -20,6 +20,7 @@
 						tidyverse
 						gt
 						ggplot2
+						fitdistrplus
             targets;
 
         };

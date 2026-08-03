@@ -49,43 +49,66 @@ routines |>
   gt::gt()
 ```
 
-Stellt sich jetzt halt die Frage, wie ist das Ergebnis pro Gerät und wie würde sich Monheim schlagen:
+Stellt sich jetzt halt die Frage, wie ist das Ergebnis pro Gerät:
 
 
-```{r}
-routines |>
+<!-- # ```{r} -->
+<!-- # routines |> -->
+<!-- #   filter(team %in% teams) |> -->
+<!-- #   left_join(competitions, by = join_by(competition_url)) |> -->
+<!-- #   filter(season == "2025") |> -->
+<!-- #   summarize( -->
+<!-- #     total = mean(end_value) * 4, -->
+<!-- #     .by = c(team, event) -->
+<!-- #   ) |> -->
+<!-- #   tidyr::pivot_wider(names_from = event, values_from = total) |> -->
+<!-- #   mutate(total = rowSums(across(-1), na.rm = TRUE)) |> -->
+<!-- #   arrange(desc(total)) |> -->
+<!-- #   gt::gt() -->
+<!-- # ``` -->
+
+
+```{r, fig.width = 12, fig.height = 8, out.width = "100%"}
+
+min_value <- 7.5
+max_value <- 15
+value_range <- max_value - min_value
+
+filtered_routines <- routines |>
   filter(team %in% teams) |>
+  filter(end_value > min_value) |>
   left_join(competitions, by = join_by(competition_url)) |>
   filter(season == "2025") |>
+  mutate(scaled_end_value = (end_value - min_value) / value_range) |>
   summarize(
-    total = mean(end_value) * 4,
-    .by = c(team, event)
-  ) |>
-  tidyr::pivot_wider(names_from = event, values_from = total) |>
-  mutate(total = rowSums(across(-1), na.rm = TRUE)) |>
-  arrange(desc(total)) |>
-  gt::gt()
+            .by = c(team, gymnast_url, event),
+            fit = list(fitdistrplus::fitdist(scaled_end_value, "beta", method = "mle"))) |>
+  mutate(alpha = sapply(fit, \(x) x$estimate[["shape1"]]),
+         beta = sapply(fit, \(x) x$estimate[["shape2"]])) |>
+  select(-c(fit))
 
+matchups <- beta_params |>
+  filter(team == "TSV Monheim") |>
+  dplyr::inner_join(beta_params, by = "event", suffix = c("_1", "_2")) |>
+  filter(!team_2 == "TSV Monheim")
 
+set.seed(123)
+n_sims <- 100000
 
-routines |>
-  filter(team %in% teams) |>
-  left_join(competitions, by = join_by(competition_url)) |>
-  filter(season == "2025") |>
-  summarize(
-    total = mean(end_value) * 4,
-    .by = c(team, event)
-  ) |>
+win_probs <- matchups |>
+  rowwise() |>
   mutate(
-    diff = total - total[team == "TSV Monheim"],
-    .by = c(event)
+    # Draw 100,000 samples for Team 1 and Team 2
+    sim_1 = list(rbeta(n_sims, alpha_1, beta_1)),
+    sim_2 = list(rbeta(n_sims, alpha_2, beta_2)),
+    # Calculate the probability that Team 1 scores higher than Team 2
+    prob_team_1_wins = mean(sim_1 > sim_2)
   ) |>
-  select(-c(total)) |>
-  mutate(diff = case_when(diff < 0 ~ 2, diff == 0 ~ 1, diff > 0 ~ 0)) |>
-  filter(!team == "TSV Monheim") |>
-  tidyr::pivot_wider(names_from = event, values_from = diff) |>
-  mutate(total = rowSums(across(-1), na.rm = TRUE)) |>
-  arrange(total) |>
-  gt::gt()
+  # Clean up the raw simulation vectors from the final output
+  select(-sim_1, -sim_2) |>
+  ungroup()
+
+ggplot(win_probs, aes(x = team_2, y = event, fill = prob_team_1_wins)) +
+  geom_tile()
 ```
 
