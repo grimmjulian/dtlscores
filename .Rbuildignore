@@ -2,9 +2,8 @@
 ^README\.Rmd$
 Makefile
 ^_targets/
-^analyse_files/
+^\.git/
 ^data-raw/
-^gen-env.R$
 ^default.nix$
 ^\.editorconfig$
 ^\.lintr$
@@ -15,3 +14,4 @@ Makefile
 ^air\.toml$
 ^flake\.nix$
 ^flake\.lock$
+^\.git$

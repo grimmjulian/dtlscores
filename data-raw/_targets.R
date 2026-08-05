@@ -33,31 +33,6 @@ list(
       usethis::use_data(competition, overwrite = TRUE)
       usethis::use_data(matchday, overwrite = TRUE)
       usethis::use_data(matchday_urls, overwrite = TRUE)
-      usethis::use_data(routines, overwrite = TRUE)
-      usethis::use_data(pairings, overwrite = TRUE)
-      usethis::use_data(competitions, overwrite = TRUE)
-    }
-  ),
-  tar_target(
-    name = competitions,
-    command = {
-      u <- matchday_urls$url
-      lapply(u, parse_matchday) |>
-        do.call(what = rbind)
-    }
-  ),
-  tar_target(
-    name = pairings,
-    command = {
-      u <- competitions$competition_url
-      lapply(u, parse_competition) |>
-        do.call(what = rbind)
-    }
-  ),
-  tar_target(
-    name = routines,
-    command = {
-      to_routines(pairings)
     }
   )
 )
