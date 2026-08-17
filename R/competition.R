@@ -87,10 +87,15 @@ parse_competition <- function(url) {
     df[[v]] <-
       as.numeric(gsub(",", ".", df[[v]]))
   }
+  df[["home_score_diff"]] <- df[["home_score_value"]] -
+    df[["guest_score_value"]]
+  df[["guest_score_diff"]] <- -df[["home_score_diff"]]
 
   df <- relocate(df, "home_gymnast_url", after = "home_gymnast")
   df <- relocate(df, "home_starts", after = "home_gymnast_url")
+  df <- relocate(df, "home_score_diff", after = "home_score_value")
   df <- relocate(df, "guest_gymnast_url", after = "guest_gymnast")
+  df <- relocate(df, "guest_score_diff", after = "guest_score_value")
   df <- relocate(df, "pairing_order", after = "event")
   if (nrow(df) > 0) {
     df[["competition_url"]] <- l
